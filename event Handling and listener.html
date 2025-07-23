@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Event Handling - Interactive Training</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .section h2 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .demo-area {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #e53e3e, #c53030);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #38a169, #2f855a);
+        }
+
+        .input-field {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            margin: 5px;
+            width: 250px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .output-box {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            height: 200px;
+            overflow-y: auto;
+            margin: 15px 0;
+            border: 1px solid #4a5568;
+        }
+
+        .output-line {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #667eea;
+            padding-left: 10px;
+        }
+
+        .mouse-area {
+            width: 300px;
+            height: 150px;
+            background: linear-gradient(45deg, #ffd89b, #19547b);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: crosshair;
+            transition: all 0.3s ease;
+            margin: 15px auto;
+        }
+
+        .form-container {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .todo-list {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            background: #f7fafc;
+        }
+
+        .todo-item {
+            background: white;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .todo-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .todo-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+            border-left-color: #38a169;
+        }
+
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 20px auto;
+        }
+
+        .calc-display {
+            grid-column: span 4;
+            padding: 20px;
+            text-align: right;
+            font-size: 24px;
+            background: #1a202c;
+            color: white;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Courier New', monospace;
+        }
+
+        .calc-btn {
+            padding: 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .calc-btn:hover {
+            background: #cbd5e0;
+            transform: scale(1.05);
+        }
+
+        .calc-btn.operator {
+            background: #667eea;
+            color: white;
+        }
+
+        .calc-btn.equals {
+            background: #38a169;
+            color: white;
+        }
+
+        .timer-display {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            color: #4a5568;
+            font-family: 'Courier New', monospace;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .status-indicator {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px;
+        }
+
+        .status-active {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #38a169;
+        }
+
+        .status-inactive {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #e53e3e;
+        }
+
+        .exercise {
+            background: #fff5f5;
+            border: 2px solid #fc8181;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .exercise h3 {
+            color: #c53030;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .calculator {
+                max-width: 250px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 JavaScript Event Handling & Event Listeners</h1>
+            <p>Interactive Training Session - Learn by Doing!</p>
+        </div>
+
+        <!-- Part 1: Basic Event Listeners -->
+        <div class="section">
+            <h2>Part 1: Basic Event Listeners</h2>
+            <div class="demo-area">
+                <p>Click the buttons below to see basic event handling in action:</p>
+                <div>
+                    <button class="btn" id="basicBtn1">Click Me!</button>
+                    <button class="btn" id="basicBtn2">Double Click Me!</button>
+                    <button class="btn btn-success" id="basicBtn3">Right Click Me!</button>
+                </div>
+            </div>
+            <div class="output-box" id="basicOutput"></div>
+            <button class="btn btn-danger" id="clearBasic">Clear Output</button>
+        </div>
+
+        <!-- Part 2: Form Events -->
+        <div class="section">
+            <h2>Part 2: Form Events & Submit Handling</h2>
+            <div class="form-container">
+                <form id="demoForm">
+                    <div style="margin-bottom: 15px;">
+                        <input type="text" class="input-field" id="userName" placeholder="Enter your name" required>
+                        <input type="email" class="input-field" id="userEmail" placeholder="Enter your email" required>
+                    </div>
+                    <button type="submit" class="btn">Submit Form</button>
+                    <button type="reset" class="btn btn-danger">Reset Form</button>
+                </form>
+            </div>
+            <div class="output-box" id="formOutput"></div>
+        </div>
+
+        <!-- Part 3: Keyboard Events -->
+        <div class="section">
+            <h2>Part 3: Keyboard Events</h2>
+            <div class="demo-area">
+                <p>Type in the input field below and watch the keyboard events:</p>
+                <input type="text" class="input-field" id="keyboardInput" placeholder="Type here and press keys...">
+                <p>Press special keys like Enter, Escape, Arrow keys, etc.</p>
+            </div>
+            <div class="output-box" id="keyboardOutput"></div>
+            <button class="btn btn-danger" id="clearKeyboard">Clear Output</button>
+        </div>
+
+        <!-- Part 4: Mouse Events -->
+        <div class="section">
+            <h2>Part 4: Mouse Events & Coordinates</h2>
+            <div class="mouse-area" id="mouseArea">
+                Move, Click, and Interact Here!
+            </div>
+            <div class="output-box" id="mouseOutput"></div>
+            <button class="btn btn-danger" id="clearMouse">Clear Output</button>
+        </div>
+
+        <!-- Part 5: Event Object Properties -->
+        <div class="section">
+            <h2>Part 5: Event Object Properties</h2>
+            <div class="demo-area">
+                <p>Click anywhere in this area to see event object properties:</p>
+                <div id="eventArea" style="width: 100%; height: 100px; background: #e6fffa; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                    Click anywhere in this area
+                </div>
+            </div>
+            <div class="output-box" id="eventOutput"></div>
+        </div>
+
+        <!-- Part 6: Event Delegation -->
+        <div class="section">
+            <h2>Part 6: Event Delegation & Dynamic Content</h2>
+            <div class="demo-area">
+                <button class="btn" id="addButton">Add New Button</button>
+                <button class="btn btn-danger" id="removeButton">Remove Last Button</button>
+                <div id="buttonContainer" style="margin-top: 15px; min-height: 50px; border: 2px dashed #cbd5e0; border-radius: 8px; padding: 10px;">
+                    <p>Dynamic buttons will appear here...</p>
+                </div>
+            </div>
+            <div class="output-box" id="delegationOutput"></div>
+        </div>
+
+        <!-- Part 7: Removing Event Listeners -->
+        <div class="section">
+            <h2>Part 7: Removing Event Listeners</h2>
+            <div class="demo-area">
+                <button class="btn" id="startListening">Start Listening to Keys</button>
+                <button class="btn btn-danger" id="stopListening">Stop Listening to Keys</button>
+                <div class="status-indicator status-inactive" id="listeningStatus">Not Listening</div>
+                <p>When listening is active, press any key and see the output below.</p>
+            </div>
+            <div class="output-box" id="removalOutput"></div>
+        </div>
+
+        <!-- Exercise: Interactive To-Do List -->
+        <div class="section">
+            <h2>🎯 Exercise: Interactive To-Do List</h2>
+            <div class="exercise">
+                <h3>Task: Create a to-do list with event delegation</h3>
+                <p>Click on items to mark them as complete. Use the form to add new items.</p>
+            </div>
+            <div class="form-container">
+                <form id="todoForm">
+                    <input type="text" class="input-field" id="todoInput" placeholder="Enter a new task..." required>
+                    <button type="submit" class="btn">Add Task</button>
+                </form>
+            </div>
+            <div class="todo-list" id="todoList">
+                <div class="todo-item" data-id="1">
+                    <span>Sample Task 1 - Click to complete</span>
+                    <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">Delete</button>
+                </div>
+                <div class="todo-item" data-id="2">
+                    <span>Sample Task 2 - Click to complete</span>
+                    <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exercise: Simple Calculator -->
+        <div class="section">
+            <h2>🎯 Exercise: Simple Calculator</h2>
+            <div class="exercise">
+                <h3>Task: Create a working calculator using click events</h3>
+                <p>Click the buttons to perform calculations. Handle all operations and clear functionality.</p>
+            </div>
+            <div class="calculator">
+                <input type="text" class="calc-display" id="display" readonly value="0">
+                <button class="calc-btn" id="clear">C</button>
+                <button class="calc-btn" id="backspace">⌫</button>
+                <button class="calc-btn operator" data-op="/">/</button>
+                <button class="calc-btn operator" data-op="*">×</button>
+                
+                <button class="calc-btn" data-num="7">7</button>
+                <button class="calc-btn" data-num="8">8</button>
+                <button class="calc-btn" data-num="9">9</button>
+                <button class="calc-btn operator" data-op="-">-</button>
+                
+                <button class="calc-btn" data-num="4">4</button>
+                <button class="calc-btn" data-num="5">5</button>
+                <button class="calc-btn" data-num="6">6</button>
+                <button class="calc-btn operator" data-op="+">+</button>
+                
+                <button class="calc-btn" data-num="1">1</button>
+                <button class="calc-btn" data-num="2">2</button>
+                <button class="calc-btn" data-num="3">3</button>
+                <button class="calc-btn equals" id="equals" style="grid-row: span 2;">=</button>
+                
+                <button class="calc-btn" data-num="0" style="grid-column: span 2;">0</button>
+                <button class="calc-btn" data-num=".">.</button>
+            </div>
+        </div>
+
+        <!-- Exercise: Timer with Event Management -->
+        <div class="section">
+            <h2>🎯 Exercise: Timer with Event Management</h2>
+            <div class="exercise">
+                <h3>Task: Create a timer with proper event listener management</h3>
+                <p>Start, pause, and reset functionality with proper cleanup.</p>
+            </div>
+            <div class="timer-display" id="timerDisplay">00:00:00</div>
+            <div class="controls">
+                <button class="btn btn-success" id="startTimer">Start</button>
+                <button class="btn" id="pauseTimer">Pause</button>
+                <button class="btn btn-danger" id="resetTimer">Reset</button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="section">
+            <h2>📚 Quick Reference & Summary</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="background: #f0fff4; padding: 15px; border-radius: 8px; border-left: 4px solid #38a169;">
+                    <h3>Event Types</h3>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>click</strong> - Mouse click</li>
+                        <li><strong>submit</strong> - Form submission</li>
+                        <li><strong>keydown/keyup</strong> - Keyboard</li>
+                        <li><strong>mouseenter/mouseleave</strong> - Mouse movement</li>
+                        <li><strong>load/resize</strong> - Window events</li>
+                    </ul>
+                </div>
+                <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                    <h3>Event Object Properties</h3>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>event.target</strong> - Element that triggered event</li>
+                        <li><strong>event.type</strong> - Type of event</li>
+                        <li><strong>event.preventDefault()</strong> - Prevent default</li>
+                        <li><strong>event.stopPropagation()</strong> - Stop bubbling</li>
+                        <li><strong>event.key</strong> - Key pressed</li>
+                    </ul>
+                </div>
+                <div style="background: #fffaf0; padding: 15px; border-radius: 8px; border-left: 4px solid #ed8936;">
+                    <h3>Best Practices</h3>
+                    <ul style="margin-left: 20px;">
+                        <li>Use named functions for removable listeners</li>
+                        <li>Always clean up event listeners</li>
+                        <li>Use event delegation for dynamic content</li>
+                        <li>Prevent default for form submissions</li>
+                        <li>Handle errors gracefully</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for exercises
+        let calculatorState = {
+            display: '0',
+            previousValue: null,
+            operation: null,
+            waitingForInput: false
+        };
+        
+        let timerState = {
+            seconds: 0,
+            interval: null,
+            isRunning: false
+        };
+        
+        let todoCounter = 3;
+        let buttonCounter = 0;
+
+        // Utility function to log events
+        function logToOutput(outputId, message, color = '#e2e8f0') {
+            const output = document.getElementById(outputId);
+            const timestamp = new Date().toLocaleTimeString();
+            const line = document.createElement('div');
+            line.className = 'output-line';
+            line.style.borderLeftColor = color;
+            line.innerHTML = `<span style="color: #a0aec0;">[${timestamp}]</span> ${message}`;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Part 1: Basic Event Listeners
+        function setupBasicEvents() {
+            const btn1 = document.getElementById('basicBtn1');
+            const btn2 = document.getElementById('basicBtn2');
+            const btn3 = document.getElementById('basicBtn3');
+            function btnFunc (event, txt) {
+                console.log("BTN CLICK", txt)
+            }
+            btn1.addEventListener('click', function (event) {
+                btnFunc(event, "param")
+            });
+
+            btn2.addEventListener('dblclick', function(event) {
+                logToOutput('basicOutput', '⚡ Double click detected!', '#ed8936');
+            });
+
+            btn3.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                logToOutput('basicOutput', '🖱️ Right click prevented and handled!', '#38a169');
+            });
+
+            document.getElementById('clearBasic').addEventListener('click', function() {
+                document.getElementById('basicOutput').innerHTML = '';
+            });
+        }
+
+        // Part 2: Form Events
+        function setupFormEvents() {
+            const form = document.getElementById('demoForm');
+            const nameInput = document.getElementById('userName');
+            const emailInput = document.getElementById('userEmail');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const name = nameInput.value;
+                const email = emailInput.value;
+                
+                logToOutput('formOutput', `📝 Form submitted successfully!`, '#38a169');
+                logToOutput('formOutput', `👤 Name: ${name}`, '#4299e1');
+                logToOutput('formOutput', `📧 Email: ${email}`, '#4299e1');
+                
+                // Reset form after logging
+                setTimeout(() => {
+                    form.reset();
+                }, 10000);
+            });
+
+            form.addEventListener('reset', function() {
+                logToOutput('formOutput', '🔄 Form reset!', '#ed8936');
+            });
+
+            // Input events
+            nameInput.addEventListener('input', function(event) {
+                console.log(event)
+                logToOutput('formOutput', `✏️ Name input changed: "${event.target.value}"`, '#805ad5');
+            });
+
+            emailInput.addEventListener('focus', function() {
+                logToOutput('formOutput', '🎯 Email field focused', '#38b2ac');
+            });
+
+            emailInput.addEventListener('blur', function() {
+                logToOutput('formOutput', '👋 Email field lost focus', '#718096');
+            });
+        }
+
+        // Part 3: Keyboard Events
+        function setupKeyboardEvents() {
+            const input = document.getElementById('keyboardInput');
+
+            input.addEventListener('keydown', function(event) {
+                let message = `⌨️ Key pressed: "${event.key}"`;
+                
+                if (event.ctrlKey) message += ' + Ctrl';
+                if (event.shiftKey) message += ' + Shift';
+                if (event.altKey) message += ' + Alt';
+                
+                logToOutput('keyboardOutput', message, '#4299e1');
+
+                // Special key handling
+                if (event.key === 'Enter') {
+                    logToOutput('keyboardOutput', '✅ Enter key - could trigger form submission', '#38a169');
+                } else if (event.key === 'Escape') {
+                    logToOutput('keyboardOutput', '❌ Escape key - could close modal', '#e53e3e');
+                    input.value = ''; // Clear input on escape
+                }
+            });
+
+            input.addEventListener('keyup', function(event) {
+                logToOutput('keyboardOutput', `⬆️ Key released: "${event.key}"`, '#805ad5');
+            });
+
+            document.getElementById('clearKeyboard').addEventListener('click', function() {
+                document.getElementById('keyboardOutput').innerHTML = '';
+            });
+        }
+
+        // Part 4: Mouse Events
+        function setupMouseEvents() {
+            const mouseArea = document.getElementById('mouseArea');
+
+            mouseArea.addEventListener('mouseenter', function() {
+                this.style.background = 'linear-gradient(45deg, #4fd1c7, #38b2ac)';
+                this.textContent = 'Mouse is inside!';
+                logToOutput('mouseOutput', '🖱️ Mouse entered the area', '#38b2ac');
+            });
+
+            mouseArea.addEventListener('mouseleave', function() {
+                this.style.background = 'linear-gradient(45deg, #ffd89b, #19547b)';
+                this.textContent = 'Move, Click, and Interact Here!';
+                logToOutput('mouseOutput', '👋 Mouse left the area', '#ed8936');
+            });
+
+            mouseArea.addEventListener('click', function(event) {
+                const rect = this.getBoundingClientRect();
+                const x = Math.round(event.clientX - rect.left);
+                const y = Math.round(event.clientY - rect.top);
+                
+                logToOutput('mouseOutput', `🎯 Clicked at coordinates: (${x}, ${y})`, '#4299e1');
+                
+                // Create a small animation
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+
+            mouseArea.addEventListener('mousemove', function(event) {
+                const rect = this.getBoundingClientRect();
+                const x = Math.round(event.clientX - rect.left);
+                const y = Math.round(event.clientY - rect.top);
+                
+                // Update text with coordinates (throttled)
+                if (!this.moveTimeout) {
+                    this.moveTimeout = setTimeout(() => {
+                        this.textContent = `Mouse at: (${x}, ${y})`;
+                        this.moveTimeout = null;
+                    }, 100);
+                }
+            });
+
+            document.getElementById('clearMouse').addEventListener('click', function() {
+                document.getElementById('mouseOutput').innerHTML = '';
+            });
+        }
+
+        // Part 5: Event Object Properties
+        function setupEventProperties() {
+            const eventArea = document.getElementById('eventArea');
+
+            eventArea.addEventListener('click', function(event) {
+                console.log(event);
+                logToOutput('eventOutput', `🎯 Event Type: ${event.type}`, '#4299e1');
+                logToOutput('eventOutput', `📍 Target Element: ${event.target.tagName}`, '#38a169');
+                logToOutput('eventOutput', `🖱️ Client Coordinates: (${event.clientX}, ${event.clientY})`, '#805ad5');
+                logToOutput('eventOutput', `🌐 Page Coordinates: (${event.pageX}, ${event.pageY})`, '#ed8936');
+                logToOutput('eventOutput', `⏰ Timestamp: ${event.timeStamp}ms`, '#38b2ac');
+                
+                if (event.ctrlKey || event.shiftKey || event.altKey) {
+                    const modifiers = [];
+                    if (event.ctrlKey) modifiers.push('Ctrl');
+                    if (event.shiftKey) modifiers.push('Shift');
+                    if (event.altKey) modifiers.push('Alt');
+                    logToOutput('eventOutput', `⌨️ Modifier Keys: ${modifiers.join(' + ')}`, '#e53e3e');
+                }
+                
+                logToOutput('eventOutput', '---', '#718096');
+            });
+        }
+
+        // Part 6: Event Delegation
+        function setupEventDelegation() {
+            const container = document.getElementById('buttonContainer');
+            const addBtn = document.getElementById('addButton');
+            const removeBtn = document.getElementById('removeButton');
+
+            // Event delegation - single listener for all dynamic buttons
+            container.addEventListener('click', function(event) {
+                console.log(event.target.tagName);
+                // if (event.target.tagName === 'BUTTON' && event.target.classList.contains('dynamic-btn')) {
+                //     const buttonText = event.target.textContent;
+                //     logToOutput('delegationOutput', `🎯 Dynamic button clicked: "${buttonText}"`, '#4299e1');
+                    
+                //     // Add some visual feedback
+                //     event.target.style.transform = 'scale(0.9)';
+                //     setTimeout(() => {
+                //         event.target.style.transform = 'scale(1)';
+                //     }, 150);
+                // }
+            });
+
+            addBtn.addEventListener('click', function() {
+                buttonCounter++;
+                const newButton = document.createElement('button');
+                newButton.className = 'btn dynamic-btn';
+                newButton.textContent = `Dynamic Button ${buttonCounter}`;
+                newButton.style.margin = '5px';
+                newButton.addEventListener('click', function(event) {
+                    // event.stopPropagation(); // Prevent bubbling to container
+                    logToOutput('delegationOutput', `🎯 Dynamic button clicked: "${this.textContent}"`, '#4299e1');
+                   
+                }); 
+                
+                if (container.children.length === 1) {
+                    container.innerHTML = ''; // Remove the placeholder text
+                }
+                
+                container.appendChild(newButton);
+                logToOutput('delegationOutput', `➕ Added: Dynamic Button ${buttonCounter}`, '#38a169');
+            });
+
+            removeBtn.addEventListener('click', function() {
+                const buttons = container.querySelectorAll('.dynamic-btn');
+                if (buttons.length > 0) {
+                    const lastButton = buttons[buttons.length - 1];
+                    const buttonText = lastButton.textContent;
+                    lastButton.remove();
+                    logToOutput('delegationOutput', `➖ Removed: ${buttonText}`, '#e53e3e');
+                    
+                    if (buttons.length === 1) {
+                        container.innerHTML = '<p>Dynamic buttons will appear here...</p>';
+                    }
+                } else {
+                    logToOutput('delegationOutput', '❌ No buttons to remove', '#ed8936');
+                }
+            });
+        }
+
+        // Part 7: Removing Event Listeners
+        function setupEventRemoval() {
+            const startBtn = document.getElementById('startListening');
+            const stopBtn = document.getElementById('stopListening');
+            const status = document.getElementById('listeningStatus');
+
+            // Named function so we can remove it later
+            function globalKeyHandler(event) {
+                logToOutput('removalOutput', `🎹 Global key pressed: "${event.key}"`, '#4299e1');
+            }
+
+            startBtn.addEventListener('click', function() {
+                document.addEventListener('keydown', globalKeyHandler);
+                status.textContent = 'Listening to Keys';
+                status.className = 'status-indicator status-active';
+                logToOutput('removalOutput', '✅ Started listening to keyboard events', '#38a169');
+            });
+
+            stopBtn.addEventListener('click', function() {
+                document.removeEventListener('keydown', globalKeyHandler);
+                status.textContent = 'Not Listening';
+                status.className = 'status-indicator status-inactive';
+                logToOutput('removalOutput', '❌ Stopped listening to keyboard events', '#e53e3e');
+            });
+        }
+
+        // To-Do List Exercise
+        function setupTodoList() {
+            const todoForm = document.getElementById('todoForm');
+            const todoInput = document.getElementById('todoInput');
+            const todoList = document.getElementById('todoList');
+
+            // Form submission
+            todoForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const taskText = todoInput.value.trim();
+                
+                if (taskText) {
+                    const todoItem = document.createElement('div');
+                    todoItem.className = 'todo-item';
+                    todoItem.dataset.id = todoCounter++;
+                    todoItem.innerHTML = `
+                        <span>${taskText}</span>
+                        <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">Delete</button>
+                    `;
+                    
+                    todoList.appendChild(todoItem);
+                    todoInput.value = '';
+                }
+            });
+
+            // Event delegation for todo items
+            todoList.addEventListener('click', function(event) {
+                const todoItem = event.target.closest('.todo-item');
+                
+                if (event.target.classList.contains('btn-danger')) {
+                    // Delete button clicked
+                    todoItem.remove();
+                } else if (event.target.tagName === 'SPAN' || event.target === todoItem) {
+                    // Todo item clicked - toggle completion
+                    todoItem.classList.toggle('completed');
+                }
+            });
+        }
+
+        // Calculator Exercise
+        function setupCalculator() {
+            const display = document.getElementById('display');
+            const calculator = document.querySelector('.calculator');
+
+            calculator.addEventListener('click', function(event) {
+                const target = event.target;
+                
+                if (target.hasAttribute('data-num')) {
+                    handleNumber(target.dataset.num);
+                } else if (target.hasAttribute('data-op')) {
+                    handleOperator(target.dataset.op);
+                } else if (target.id === 'equals') {
+                    handleEquals();
+                } else if (target.id === 'clear') {
+                    handleClear();
+                } else if (target.id === 'backspace') {
+                    handleBackspace();
+                }
+            });
+
+            function handleNumber(num) {
+                if (calculatorState.waitingForInput) {
+                    calculatorState.display = num;
+                    calculatorState.waitingForInput = false;
+                } else {
+                    calculatorState.display = calculatorState.display === '0' ? num : calculatorState.display + num;
+                }
+                updateDisplay();
+            }
+
+            function handleOperator(op) {
+                if (calculatorState.operation && !calculatorState.waitingForInput) {
+                    handleEquals();
+                }
+                
+                calculatorState.previousValue = parseFloat(calculatorState.display);
+                calculatorState.operation = op;
+                calculatorState.waitingForInput = true;
+            }
+
+            function handleEquals() {
+                if (calculatorState.operation && calculatorState.previousValue !== null) {
+                    const current = parseFloat(calculatorState.display);
+                    let result;
+                    
+                    switch (calculatorState.operation) {
+                        case '+':
+                            result = calculatorState.previousValue + current;
+                            break;
+                        case '-':
+                            result = calculatorState.previousValue - current;
+                            break;
+                        case '*':
+                            result = calculatorState.previousValue * current;
+                            break;
+                        case '/':
+                            result = current !== 0 ? calculatorState.previousValue / current : 'Error';
+                            break;
+                    }
+                    
+                    calculatorState.display = result.toString();
+                    calculatorState.operation = null;
+                    calculatorState.previousValue = null;
+                    calculatorState.waitingForInput = true;
+                    updateDisplay();
+                }
+            }
+
+            function handleClear() {
+                calculatorState.display = '0';
+                calculatorState.previousValue = null;
+                calculatorState.operation = null;
+                calculatorState.waitingForInput = false;
+                updateDisplay();
+            }
+
+            function handleBackspace() {
+                if (calculatorState.display.length > 1) {
+                    calculatorState.display = calculatorState.display.slice(0, -1);
+                } else {
+                    calculatorState.display = '0';
+                }
+                updateDisplay();
+            }
+
+            function updateDisplay() {
+                display.value = calculatorState.display;
+            }
+        }
+
+        // Timer Exercise
+        function setupTimer() {
+            const display = document.getElementById('timerDisplay');
+            const startBtn = document.getElementById('startTimer');
+            const pauseBtn = document.getElementById('pauseTimer');
+            const resetBtn = document.getElementById('resetTimer');
+
+            function updateDisplay() {
+                const hours = Math.floor(timerState.seconds / 3600);
+                const minutes = Math.floor((timerState.seconds % 3600) / 60);
+                const seconds = timerState.seconds % 60;
+                
+                display.textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            startBtn.addEventListener('click', function() {
+                if (!timerState.isRunning) {
+                    timerState.interval = setInterval(() => {
+                        timerState.seconds++;
+                        updateDisplay();
+                    }, 1000);
+                    timerState.isRunning = true;
+                    this.textContent = 'Running...';
+                    this.disabled = true;
+                }
+            });
+
+            pauseBtn.addEventListener('click', function() {
+                if (timerState.isRunning) {
+                    clearInterval(timerState.interval);
+                    timerState.isRunning = false;
+                    startBtn.textContent = 'Resume';
+                    startBtn.disabled = false;
+                }
+            });
+
+            resetBtn.addEventListener('click', function() {
+                clearInterval(timerState.interval);
+                timerState.seconds = 0;
+                timerState.isRunning = false;
+                updateDisplay();
+                startBtn.textContent = 'Start';
+                startBtn.disabled = false;
+            });
+        }
+
+        // Window events
+        function setupWindowEvents() {
+            let resizeTimeout;
+            
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    console.log(`Window resized to: ${window.innerWidth}x${window.innerHeight}`);
+                }, 250);
+            });
+
+            window.addEventListener('load', function() {
+                console.log('Page fully loaded!');
+            });
+        }
+
+        // Initialize all components when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 JavaScript Event Training Started!');
+            
+            setupBasicEvents();
+            setupFormEvents();
+            setupKeyboardEvents();
+            setupMouseEvents();
+            setupEventProperties();
+            setupEventDelegation();
+            setupEventRemoval();
+            setupTodoList();
+            setupCalculator();
+            setupTimer();
+            setupWindowEvents();
+            
+            console.log('✅ All event handlers initialized!');
+        });
+
+        // Cleanup function for demonstration
+        window.addEventListener('beforeunload', function() {
+            // Clean up any intervals
+            if (timerState.interval) {
+                clearInterval(timerState.interval);
+            }
+            console.log('🧹 Cleaned up event listeners and intervals');
+        });
+    </script>
+</body>
+</html>

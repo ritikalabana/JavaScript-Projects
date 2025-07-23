@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Number Guessing Game - Advanced</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* === BASE STYLES === */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1e1e1e;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+      transition: background-color 0.3s;
+    }
+
+    h1 {
+      margin: 20px 0;
+      font-size: 2em;
+    }
+
+    #game-container {
+      background: #2c2c2c;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    }
+
+    input[type="number"] {
+      padding: 10px;
+      width: 100%;
+      margin: 15px 0;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px 5px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #00b894;
+      color: white;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #019170;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 1.2em;
+      min-height: 40px;
+    }
+
+    .info-row {
+      margin: 10px 0;
+      font-size: 0.95em;
+      color: #f1c40f;
+    }
+
+    .scoreboard {
+      background-color: #111;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 5px;
+    }
+
+    .theme-toggle, .sound-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    label {
+      font-size: 14px;
+    }
+
+    .light-theme {
+      background-color: #f9f9f9;
+      color: #222;
+    }
+
+    .light-theme #game-container {
+      background-color: #fff;
+      color: #222;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .fade {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      #game-container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎮 Number Guessing Game</h1>
+
+  <div id="game-container" role="main" aria-labelledby="gameTitle">
+    <p id="gameTitle">I'm thinking of a number between 1 and 100</p>
+
+    <div class="info-row">
+      <label for="difficulty">Difficulty: </label>
+      <select id="difficulty">
+        <option value="easy">Easy (15 tries)</option>
+        <option value="medium" selected>Medium (10 tries)</option>
+        <option value="hard">Hard (5 tries)</option>
+      </select>
+    </div>
+
+    <input type="number" id="guessInput" placeholder="Enter your guess" min="1" max="100" aria-label="Guess Input"/>
+
+    <div>
+      <button onclick="checkGuess()">Submit</button>
+      <button onclick="resetGame()">Reset</button>
+    </div>
+
+    <p id="message" class="fade" aria-live="polite"></p>
+
+    <div class="info-row">
+      <span id="attemptsInfo">Attempts left: 10</span>
+      <span id="timer">⏱ Time: 0s</span>
+    </div>
+
+    <div class="theme-toggle">
+      <input type="checkbox" id="themeSwitch" onchange="toggleTheme()">
+      <label for="themeSwitch">Light Theme</label>
+    </div>
+
+    <div class="sound-toggle">
+      <input type="checkbox" id="soundToggle">
+      <label for="soundToggle">Enable Sound</label>
+    </div>
+
+    <div class="scoreboard">
+      <p>🎯 Best Score: <span id="bestScore">--</span></p>
+    </div>
+  </div>
+
+  <audio id="winSound" src="https://www.soundjay.com/buttons/sounds/button-4.mp3" preload="auto"></audio>
+  <audio id="failSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3" preload="auto"></audio>
+
+  <script>
+    // === GAME STATE VARIABLES ===
+    let secretNumber = 0;
+    let maxAttempts = 10;
+    let attempts = 0;
+    let gameOver = false;
+    let timerInterval = null;
+    let timeElapsed = 0;
+
+    // === DOM ELEMENTS ===
+    const guessInput = document.getElementById('guessInput');
+    const message = document.getElementById('message');
+    const attemptsInfo = document.getElementById('attemptsInfo');
+    const timerDisplay = document.getElementById('timer');
+    const bestScoreDisplay = document.getElementById('bestScore');
+    const soundToggle = document.getElementById('soundToggle');
+    const winSound = document.getElementById('winSound');
+    const failSound = document.getElementById('failSound');
+    const difficultySelect = document.getElementById('difficulty');
+
+    // === INITIAL SETUP ===
+    loadBestScore();
+    resetGame();
+
+    // === FUNCTION TO START A NEW GAME ===
+    function resetGame() {
+      const difficulty = difficultySelect.value;
+      if (difficulty === "easy") maxAttempts = 15;
+      else if (difficulty === "hard") maxAttempts = 5;
+      else maxAttempts = 10;
+
+      secretNumber = Math.floor(Math.random() * 100) + 1;
+      attempts = 0;
+      gameOver = false;
+      timeElapsed = 0;
+      guessInput.disabled = false;
+      guessInput.value = "";
+      message.textContent = "";
+      attemptsInfo.textContent = `Attempts left: ${maxAttempts}`;
+      clearInterval(timerInterval);
+      startTimer();
+    }
+
+    // === FUNCTION TO HANDLE GUESS ===
+    function checkGuess() {
+      if (gameOver) return;
+
+      const guess = parseInt(guessInput.value);
+      if (isNaN(guess) || guess < 1 || guess > 100) {
+        showMessage("⚠️ Enter a valid number between 1 and 100");
+        return;
+      }
+
+      attempts++;
+      const remaining = maxAttempts - attempts;
+      attemptsInfo.textContent = `Attempts left: ${remaining}`;
+
+      if (guess === secretNumber) {
+        showMessage(`🎉 Correct! The number was ${secretNumber}. Attempts: ${attempts}, Time: ${timeElapsed}s`);
+        playSound('win');
+        updateBestScore(attempts, timeElapsed);
+        endGame();
+      } else if (guess < secretNumber) {
+        showMessage("📉 Too low! Try again.");
+      } else {
+        showMessage("📈 Too high! Try again.");
+      }
+
+      if (attempts >= maxAttempts && guess !== secretNumber) {
+        showMessage(`💥 Game Over! The number was ${secretNumber}`);
+        playSound('fail');
+        endGame();
+      }
+    }
+
+    // === GAME END LOGIC ===
+    function endGame() {
+      gameOver = true;
+      guessInput.disabled = true;
+      clearInterval(timerInterval);
+    }
+
+    // === MESSAGE DISPLAY ===
+    function showMessage(text) {
+      message.classList.remove('fade');
+      void message.offsetWidth; // restart animation
+      message.classList.add('fade');
+      message.textContent = text;
+    }
+
+    // === TIMER ===
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        timeElapsed++;
+        timerDisplay.textContent = `⏱ Time: ${timeElapsed}s`;
+      }, 1000);
+    }
+
+    // === BEST SCORE STORAGE ===
+    function updateBestScore(attempts, time) {
+      const prev = JSON.parse(localStorage.getItem("bestScore")) || { attempts: 999, time: 9999 };
+
+      if (attempts < prev.attempts || (attempts === prev.attempts && time < prev.time)) {
+        const best = { attempts, time };
+        localStorage.setItem("bestScore", JSON.stringify(best));
+        displayBestScore(best);
+      }
+    }
+
+    function loadBestScore() {
+      const best = JSON.parse(localStorage.getItem("bestScore"));
+      if (best) displayBestScore(best);
+    }
+
+    function displayBestScore({ attempts, time }) {
+      bestScoreDisplay.textContent = `${attempts} attempts in ${time}s`;
+    }
+
+    // === THEME TOGGLE ===
+    function toggleTheme() {
+      document.body.classList.toggle("light-theme");
+    }
+
+    // === SOUND EFFECTS ===
+    function playSound(type) {
+      if (!soundToggle.checked) return;
+      if (type === "win") winSound.play();
+      else failSound.play();
+    }
+  </script>
+</body>
+</html>
